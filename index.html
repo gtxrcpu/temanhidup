@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B8B;
+            --secondary: #FFB8B8;
+            --accent: #FFD3B6;
+            --background: #FFF6F6;
+            --text: #4A4A4A;
+            --light-text: #888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .love-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .envelope {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .envelope-icon {
+            font-size: 4rem;
+            color: white;
+            transition: all 0.5s ease;
+            z-index: 2;
+        }
+
+        .envelope:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 250px solid transparent;
+            border-right: 250px solid transparent;
+            border-bottom: 100px solid rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+            transform-origin: bottom;
+            transform: scaleY(0.5) translateY(100px);
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        .envelope.open {
+            height: 100px;
+        }
+
+        .envelope.open:before {
+            transform: scaleY(1) translateY(100px) rotateX(180deg);
+        }
+
+        .envelope.open .envelope-icon {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        .letter {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.8s ease;
+            background-color: white; /* Ensure letter background is solid white */
+        }
+
+        .envelope.open + .letter {
+            padding: 30px;
+            max-height: 1000px;
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2; /* Ensure text stays above envelope flap */
+        }
+
+        .letter-header h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .letter-content {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2; /* Ensure text stays above envelope flap */
+        }
+
+        .letter-content p {
+            margin-bottom: 15px;
+            text-align: left;
+            background-color: white; /* Ensure text has solid background */
+            padding: 2px 5px; /* Add slight padding to prevent cutoff */
+        }
+
+        .signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-align: right;
+            margin-top: 30px;
+            background-color: white; /* Ensure signature has solid background */
+            display: inline-block;
+            padding: 0 10px;
+        }
+
+        /* REPLACE THIS SPOTIFY LINK WITH YOUR OWN */
+        /* ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ */
+        .spotify-player {
+            width: 100%;
+            height: 80px;
+            background-color: #1DB954;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
+
+        .spotify-player:hover {
+            background-color: #1ed760;
+            transform: translateY(-2px);
+        }
+
+        .spotify-player i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .interactive-elements {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .interactive-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 480px) {
+            .interactive-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+        }
+
+        .interactive-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 1.2rem;
+            opacity: 0;
+            animation: float 6s linear forwards;
+            color: var(--primary);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden-message {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            text-align: center;
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 0;
+            width: 100%;
+            background-color: white; /* Ensure message has solid background */
+            border-radius: 5px;
+            padding: 0 5px;
+        }
+
+        @media (max-width: 480px) {
+            .hidden-message {
+                font-size: 0.8rem;
+            }
+        }
+
+        .interactive-icon.active + .hidden-message {
+            max-height: 100px;
+            margin-top: 10px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="love-container">
+        <!-- Envelope that opens to reveal letter -->
+        <div class="envelope" id="envelope">
+            <div class="envelope-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+        </div>
+        
+        <!-- The love letter -->
+        <div class="letter" id="letter">
+            <div class="letter-header">
+                <h1>For You, Azka</h1>
+            </div>
+            
+            <div class="letter-content">
+                <p>Dear Azka,</p>
+                <p>I'm lucky to have met you again at this moment. It feels like fate has brought us back together when we needed it most.</p>
+                <p>I hope that moving forward, we can stay together, walking side by side through whatever life brings.</p>
+                <p>Just like the song Teman Hidup by Tulus, I want you to be the one I share my journey with, today and always.</p>
+                <div class="signature">Forever yours</div>
+            </div>
+            
+            <!-- Spotify player - REPLACE THE LINK BELOW WITH YOUR SPOTIFY TRACK -->
+            <!-- ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ -->
+            <a href="https://open.spotify.com/track/1U1qumuS2O5Qttw8G7UXOZ?si=1f193a19ae62443d" target="_blank" class="spotify-player">
+                <i class="fab fa-spotify"></i>
+                Play Our Song : Teman Hidup - Tulus
+            </a>
+            <!-- ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ -->
+            
+            <!-- Interactive elements -->
+            <div class="interactive-elements">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="interactive-icon" id="heartIcon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="hidden-message" id="heartMessage">
+                        You have my ❤️
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="interactive-icon" id="musicIcon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="hidden-message" id="musicMessage">
+                        This song reminds me of you
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="interactive-icon" id="memoryIcon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="hidden-message" id="memoryMessage">
+                        Every moment with you is special
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="interactive-icon" id="kissIcon">
+                        <i class="fas fa-kiss-wink-heart"></i>
+                    </div>
+                    <div class="hidden-message" id="kissMessage">
+                        Sending you virtual....!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating hearts container -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <script>
+        // Envelope opening animation
+        const envelope = document.getElementById('envelope');
+        const letter = document.getElementById('letter');
+        
+        envelope.addEventListener('click', function() {
+            this.classList.add('open');
+            
+            // Create hearts when opened
+            createHearts(20);
+            
+            // Prevent closing
+            this.style.pointerEvents = 'none';
+        });
+        
+        // Interactive icons
+        const icons = [
+            { id: 'heartIcon', message: 'heartMessage' },
+            { id: 'musicIcon', message: 'musicMessage' },
+            { id: 'memoryIcon', message: 'memoryMessage' },
+            { id: 'kissIcon', message: 'kissMessage' }
+        ];
+        
+        icons.forEach(icon => {
+            const element = document.getElementById(icon.id);
+            const message = document.getElementById(icon.message);
+            
+            element.addEventListener('click', function() {
+                // Close other messages first
+                icons.forEach(i => {
+                    if (i.id !== icon.id) {
+                        document.getElementById(i.id).classList.remove('active');
+                        document.getElementById(i.message).style.maxHeight = '0';
+                    }
+                });
+                
+                // Toggle current message
+                this.classList.toggle('active');
+                
+                if (this.classList.contains('active')) {
+                    message.style.maxHeight = '100px';
+                    createHearts(5);
+                } else {
+                    message.style.maxHeight = '0';
+                }
+            });
+        });
+        
+        // Create floating hearts
+        function createHearts(count) {
+            const container = document.getElementById('floatingHearts');
+            
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('heart');
+                
+                // Random position and animation
+                const left = Math.random() * 100;
+                const delay = Math.random() * 3;
+                const duration = 3 + Math.random() * 4;
+                const size = 0.8 + Math.random() * 1.5;
+                
+                heart.style.left = `${left}%`;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.fontSize = `${size}rem`;
+                
+                container.appendChild(heart);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, duration * 1000);
+            }
+        }
+        
+        // Initial animation - create some hearts
+        setTimeout(() => {
+            createHearts(5);
+        }, 1000);
+        
+        // Continuous subtle animations
+        setInterval(() => {
+            // Randomly create some hearts in the background
+            if (Math.random() > 0.7) {
+                createHearts(1);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
